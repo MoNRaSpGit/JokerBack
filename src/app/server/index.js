@@ -53,13 +53,15 @@ app.get("/health", async (_req, res) => {
 const PORT = process.env.PORT || 3000;
 
 app.listen(PORT, async () => {
-  console.log(`Joker API running on :${PORT}`);
+    console.log(`Joker API running on :${PORT}`);
+    console.log("DB_HOST:", process.env.DB_HOST);
+    console.log("DB_PORT:", process.env.DB_PORT);
 
-  try {
-    await pool.query("SELECT 1");
-    console.log("✅ DB conectada con éxito");
-  } catch (error) {
-    console.error("❌ Error conectando a DB:");
-    console.error(error.message);
-  }
+    try {
+        await pool.query("SELECT 1");
+        console.log("✅ DB conectada con éxito");
+    } catch (error) {
+        console.error("❌ Error conectando a DB:");
+        console.error(error.message);
+    }
 });
