@@ -1,33 +1,34 @@
 import express from "express";
 import cors from "cors";
 import "dotenv/config";
+import productosRoutes from "../../routes/productos.routes.js";
 import { pool } from "../../config/db.js";
 
 const app = express();
 
 // CORS: GitHub Pages + local dev
-const allowedOrigins = [
-    "http://localhost:5173",
-    "https://monraspgit.github.io",
-];
-
 app.use(
     cors({
         origin: (origin, cb) => {
             // permitir requests sin origin (Postman, curl)
             if (!origin) return cb(null, true);
 
-            const ok =
-                allowedOrigins.includes(origin) ||
-                origin.startsWith("https://monraspgit.github.io");
+            const isLocalhost =
+                origin.startsWith("http://localhost:") ||
+                origin.startsWith("http://127.0.0.1:");
 
-            return ok ? cb(null, true) : cb(new Error("Not allowed by CORS"));
+            const isGithubPages = origin === "https://monraspgit.github.io";
+
+            return isLocalhost || isGithubPages
+                ? cb(null, true)
+                : cb(new Error("Not allowed by CORS"));
         },
         credentials: true,
     })
 );
 
 app.use(express.json());
+app.use("/api/productos", productosRoutes);
 
 // Healthcheck
 app.get("/health", async (_req, res) => {
